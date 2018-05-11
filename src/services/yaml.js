@@ -5,13 +5,13 @@ import { System as SystemConfig } from '../config'
 const esClient = new elasticsearch.Client({ host: SystemConfig.Es_Base_URL })
 const SPLIT_CHAR = '.'
 
-class yamlDB {
+class YamlDB {
   static tableIndex (t) {
     return [t.prefix, t.tableName, t.version].join(SPLIT_CHAR)
   }
 
   static getPathData (path) {
-    const reg = /^__data__\/([^\/]+)\/(.+)\.yml$/
+    const reg = /^__data__\/([^/]+)\/(.+)\.yml$/
     const paths = path.match(reg)
 
     if (!paths) return
@@ -52,7 +52,7 @@ class yamlDB {
 
 const commit = async (path, action, content, options) => {
   // currently only support yamldb
-  return yamlDB.commit(path, action, content, options)
+  return YamlDB.commit(path, action, content, options)
 }
 
 export default {
