@@ -1,8 +1,8 @@
 {
-  "name": "koa2-API-scaffold",
+  "name": "esGateway",
   "version": "1.0.0",
-  "description": "Koa2 RESTful API 服务器的脚手架",
-  "author": "轶哥 <a@wyr.me>",
+  "description": "keepwork elasticsearch gateway",
+  "author": "Keepwork Team",
   "scripts": {
     "start": "gulp nodemon",
     "dev": "gulp",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "elasticsearch": "^14.2.2",
+    "js-yaml": "^3.11.0",
     "jsonwebtoken": "^8.1.0",
     "koa": "^2.3.0",
     "koa-body": "^2.5.0",
