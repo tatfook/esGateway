@@ -10,6 +10,7 @@
     "production": "node dist/app.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "elasticsearch": "^14.2.2",
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^8.1.0",
