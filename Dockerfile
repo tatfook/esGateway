@@ -1,4 +1,4 @@
-FROM xuntian/node-yarn as builder
+FROM xuntian/node-yarn
 COPY ./ /code/
 WORKDIR /code
 
