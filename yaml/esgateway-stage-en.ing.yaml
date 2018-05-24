@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: esgateway-stage-en
+spec: 
+  rules: 
+  - host: api-stage-en.keepwork.com
+    http: 
+      paths:
+      - path: /es
+        backend:
+          serviceName: esgateway-stage-en
+          servicePort: 3000
