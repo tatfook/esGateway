@@ -1,4 +1,4 @@
-module.exports = function () {
+export default function () {
   return function (ctx, next) {
     switch (ctx.status) {
       case 404:

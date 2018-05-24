@@ -10,4 +10,4 @@ router
   .post('/es/search', controllers.es.search)
   .post('/git/commit', controllers.git.commit)
 
-export default router;
+export default router
