@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: esgateway-stage-en
+  labels:
+    app: esgateway-stage-en
+spec:
+  containers:
+  - name: esgateway-stage-en
+    image: 10.28.18.13/xuntian/esgateway-stage-en:1
+    ports:
+      - containerPort: 3000
+    
