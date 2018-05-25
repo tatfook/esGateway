@@ -6,8 +6,8 @@ const pagesRouter = new KoaRouter({ prefix: '/pages' })
 
 pagesRouter
   .get('/search', controllers.pages.search)
-  .put('/', controllers.pages.create)
-  .post('/:id', controllers.pages.update)
+  .post('/', controllers.pages.create)
+  .put('/:id', controllers.pages.update)
   .delete('/:id', controllers.pages.remove)
 
 router

@@ -31,6 +31,13 @@ class ErrorHandler {
     }
   }
 
+  static 409 (ctx, err) {
+    ctx.body.error = {
+      type: 'Conflict',
+      message: err.message
+    }
+  }
+
   static 500 (ctx, err) {
     ctx.status = 500
     ctx.body = {
