@@ -12,8 +12,9 @@ export let System = {
   System_plugin_path: path.join(__dirname, './plugins'), // 插件路径
   Session_Key: 'RESTfulAPI', // 生产环境务必随机设置一个值
   Es_Base_URL: 'http://10.28.18.7:9200',
-  Es_Version: '5.3', // es版本
+  Es_Version: '5.6', // es版本
   KeepWork_API_Base_URL: 'http://stage.keepwork.com/api/wiki/models/',
+  KeepWork_ENV: 'www',
   db_type: 'mysql' // 数据库类型
 }
 

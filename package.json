@@ -20,6 +20,7 @@
     "koa-jwt": "^3.2.2",
     "koa-router": "^7.2.1",
     "koa-static2": "^0.1.8",
+    "koa-validate": "^1.0.7",
     "require-directory": "^2.1.1"
   },
   "devDependencies": {

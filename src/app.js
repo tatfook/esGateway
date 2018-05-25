@@ -1,6 +1,7 @@
 import Koa2 from 'koa'
 import KoaBody from 'koa-body'
 import KoaStatic from 'koa-static2'
+import KoaValidate from 'koa-validate'
 import { System as SystemConfig } from './config'
 import path from 'path'
 import MainRoutes from './routes/main-routes'
@@ -11,6 +12,7 @@ import ErrorRoutes from './routes/error-routes'
 
 const app = new Koa2()
 const env = process.env.NODE_ENV || 'development' // Current mode
+KoaValidate(app)
 
 // const publicKey = fs.readFileSync(path.join(__dirname, '../publicKey.pub'))
 

@@ -2,7 +2,7 @@ export default function () {
   return function (ctx, next) {
     switch (ctx.status) {
       case 404:
-        ctx.body = '没有找到内容 - 404'
+        ctx.throw(404, 'Page Not Found')
         break
     }
     return next()
