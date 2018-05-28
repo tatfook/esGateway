@@ -44,7 +44,7 @@ class ErrorHandler {
       status: 500,
       error: {
         type: 'Internal Server Error',
-        message: 'An unknown error happened'
+        message: err.message || 'An unknown error happened'
       }
     }
   }

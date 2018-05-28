@@ -17,10 +17,11 @@ export const search = async (ctx, next) => {
     type: type,
     from: from,
     size: size,
-    body: generateDSL(ctx)
+    body: getSearchDSL(ctx)
   }).then(data => {
     ctx.body = wrapSearchResult(data)
   }).catch(e => {
+    console.error(e)
     ctx.throw(e.statusCode, 'Bad search request')
   })
 }
@@ -37,6 +38,7 @@ export const create = async (ctx, next) => {
     ctx.status = 201
     ctx.body = { created: true }
   }).catch(e => {
+    console.error(e)
     ctx.throw(e.statusCode, 'Already exists')
   })
 }
@@ -52,6 +54,7 @@ export const update = async (ctx, next) => {
   }).then(data => {
     ctx.body = { updated: true }
   }).catch(e => {
+    console.error(e)
     ctx.throw(e.statusCode, 'Data not found')
   })
 }
@@ -67,12 +70,47 @@ export const remove = async (ctx, next) => {
   }).then(data => {
     ctx.body = { deleted: true }
   }).catch(e => {
+    console.error(e)
     ctx.throw(e.statusCode, 'Data not found')
   })
 }
 
+export const removeSite = async (ctx, next) => {
+  validateRemoveSite(ctx)
+  await esClient.deleteByQuery({
+    index: index,
+    type: type,
+    body: getRemoveSiteDSL(ctx)
+  }).then(data => {
+    ctx.body = {
+      total_pages: data.total,
+      deleted_pages: data.deleted
+    }
+  }).catch(e => {
+    console.error(e)
+    ctx.throw(500, 'Fail to delete pages of this website')
+  })
+}
+
+export const updateVisibility = async ctx => {
+  validateUpdateVisibility(ctx)
+  await esClient.updateByQuery({
+    index: index,
+    type: type,
+    body: getUpdateVisibilityDSL(ctx)
+  }).then(data => {
+    ctx.body = {
+      total_pages: data.total,
+      updated_pages: data.updated
+    }
+  }).catch(e => {
+    console.error(e)
+    ctx.throw(500, 'Fail to update pages of this website')
+  })
+}
+
 const validateCreate = ctx => {
-  ctx.checkBody('url').notEmpty('required').match(/^\/.+\/.+\/.+/u, 'invalid format')
+  ctx.checkBody('url').notEmpty('required').match(/^\/.+\/.+\/.+/, 'invalid format')
   ctx.checkBody('source_url').notEmpty('required').isUrl('must be an url')
   ctx.checkBody('visibility').notEmpty('required').in(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
@@ -114,9 +152,27 @@ const validateSearch = ctx => {
   if (ctx.errors) ctx.throw(400)
 }
 
+const validateRemoveSite = ctx => {
+  let siteUrl = ctx.checkParams('id').notEmpty('required').isBase64('invalid')
+    .decodeBase64().match(/^\/.+\/.+/, 'invalid').value
+  if (ctx.errors) ctx.throw(400)
+  let splitedUrl = siteUrl.split('/')
+  ctx.request.body = { username: splitedUrl[1], sitename: splitedUrl[2] }
+}
+
+const validateUpdateVisibility = ctx => {
+  let siteUrl = ctx.checkParams('id').notEmpty('required').isBase64('invalid')
+    .decodeBase64().match(/^\/.+\/.+/, 'invalid').value
+  ctx.checkBody('visibility').notEmpty('required').in(['public', 'private'], 'invalid')
+  if (ctx.errors) ctx.throw(400)
+  let splitedUrl = siteUrl.split('/')
+  ctx.request.body.username = splitedUrl[1]
+  ctx.request.body.sitename = splitedUrl[2]
+}
+
 // DSL(Domain Specific Language) is a json syntax used to
 // search data in elasticsearch
-const generateDSL = ctx => {
+const getSearchDSL = ctx => {
   return {
     query: {
       bool: {
@@ -150,6 +206,36 @@ const generateDSL = ctx => {
       post_tags: '</span>'
     },
     post_filter: ctx.query.username ? { term: { username: ctx.query.username } } : undefined
+  }
+}
+
+const getRemoveSiteDSL = ctx => {
+  return {
+    query: {
+      bool: {
+        must: [
+          { term: { username: ctx.request.body.username } },
+          { term: { sitename: ctx.request.body.sitename } }
+        ]
+      }
+    }
+  }
+}
+
+const getUpdateVisibilityDSL = ctx => {
+  return {
+    query: {
+      bool: {
+        must: [
+          { term: { username: ctx.request.body.username } },
+          { term: { sitename: ctx.request.body.sitename } }
+        ]
+      }
+    },
+    script: {
+      source: `ctx._source.visibility = "${ctx.request.body.visibility}"`, // script runs in es
+      'lang': 'painless'
+    }
   }
 }
 
