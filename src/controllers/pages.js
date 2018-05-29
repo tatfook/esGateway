@@ -111,7 +111,7 @@ export const updateVisibility = async ctx => {
 const validateCreate = ctx => {
   ctx.checkBody('url').notEmpty('required').match(/^\/.+\/.+\/.+/, 'invalid format')
   ctx.checkBody('source_url').notEmpty('required').isUrl('must be an url')
-  ctx.checkBody('visibility').empty().default('public').in(['public', 'private'], 'invalid')
+  ctx.checkBody('visibility').optional().default('public').in(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
 
   let reqBody = ctx.request.body
@@ -129,9 +129,9 @@ const validateCreate = ctx => {
 
 const validateUpdate = ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
-  ctx.checkBody('visibility').empty().in(['public', 'private'], 'invalid')
-  ctx.checkBody('content').empty()
-  ctx.checkBody('tags').empty().len(0, 5, 'Too many members')
+  ctx.checkBody('visibility').optional().in(['public', 'private'], 'invalid')
+  ctx.checkBody('content').optional()
+  ctx.checkBody('tags').optional().len(0, 5, 'Too many members')
   if (ctx.errors) ctx.throw(400)
 
   let reqBody = ctx.request.body
@@ -145,9 +145,9 @@ const validateUpdate = ctx => {
 
 const validateSearch = ctx => {
   ctx.checkQuery('q').notEmpty('required')
-  ctx.checkQuery('page').empty().default(1).isNumeric()
-  ctx.checkQuery('size').empty().default(10).isNumeric()
-  ctx.checkQuery('username').empty()
+  ctx.checkQuery('page').optional().default(1).isNumeric()
+  ctx.checkQuery('size').optional().default(10).isNumeric()
+  ctx.checkQuery('username').optional()
   if (ctx.errors) ctx.throw(400)
 }
 
@@ -204,7 +204,9 @@ const getSearchDSL = ctx => {
       pre_tags: '<span>',
       post_tags: '</span>'
     },
-    post_filter: ctx.query.username ? { term: { username: ctx.query.username } } : undefined
+    post_filter: ctx.query.username ? {
+      term: { username: ctx.query.username }
+    } : undefined
   }
 }
 
