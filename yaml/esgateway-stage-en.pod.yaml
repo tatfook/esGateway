@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: esgateway-stage-en
-    image: 10.28.18.13/xuntian/esgateway-stage-en:4
+    image: 10.28.18.13/xuntian/esgateway-stage-en:7
     ports:
       - containerPort: 3000
     
