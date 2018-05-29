@@ -1,6 +1,5 @@
 import esClient from '../services/elasticsearch'
-import paginate from '../lib/pagination'
-import moment from 'moment'
+import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
 
 let index = `${SystemConfig.KeepWork_ENV}_kw_pages`
@@ -112,7 +111,7 @@ export const updateVisibility = async ctx => {
 const validateCreate = ctx => {
   ctx.checkBody('url').notEmpty('required').match(/^\/.+\/.+\/.+/, 'invalid format')
   ctx.checkBody('source_url').notEmpty('required').isUrl('must be an url')
-  ctx.checkBody('visibility').notEmpty('required').in(['public', 'private'], 'invalid')
+  ctx.checkBody('visibility').empty().default('public').in(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
 
   let reqBody = ctx.request.body
@@ -124,7 +123,7 @@ const validateCreate = ctx => {
     pagename: pagename,
     source_url: reqBody.source_url,
     visibility: reqBody.visibility,
-    update_time: moment().format('YYYY-MM-DD HH:mm:ss')
+    update_time: getDatetime()
   }
 }
 
@@ -140,7 +139,7 @@ const validateUpdate = ctx => {
     content: reqBody.content,
     tags: reqBody.tags,
     visibility: reqBody.visibility,
-    update_time: moment().format('YYYY-MM-DD HH:mm:ss')
+    update_time: getDatetime()
   }
 }
 
