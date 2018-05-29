@@ -1,5 +1,5 @@
 import KoaRouter from 'koa-router'
-import controllers from '../controllers/index.js'
+import controllers from '../controllers/index'
 
 const mainRouter = new KoaRouter()
 const pagesRouter = new KoaRouter({ prefix: '/pages' })
@@ -16,7 +16,7 @@ sitesRouter
   .get('/search', controllers.sites.search)
   .post('/', controllers.sites.create)
   .put('/:id', controllers.sites.update)
-  .put('/visibility/:id', controllers.sites.updateVisibility)
+  .put('/:id/visibility', controllers.sites.updateVisibility)
   .delete('/:id', controllers.sites.remove)
 
 usersRouter

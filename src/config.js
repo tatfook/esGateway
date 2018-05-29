@@ -1,21 +1,44 @@
 import path from 'path'
+import dotenv from 'dotenv'
+
+if (process.env.NODE_ENV === 'test') {
+  dotenv.config({path: path.resolve(process.cwd(), 'test/.env')})
+} else {
+  dotenv.config()
+}
 
 // 系统配置
 export let System = {
-  API_server_type: 'http://', // API服务器协议类型,包含"http://"或"https://"
-  API_server_host: 'localhost', // API服务器暴露的域名地址,请勿添加"http://"
-  API_server_port: '3000', // API服务器监听的端口号
-  HTTP_server_type: 'http://', // HTTP服务器协议类型,包含"http://"或"https://"
-  HTTP_server_host: 'www.XXX.com', // HTTP服务器地址,请勿添加"http://" （即前端调用使用的服务器地址，如果是APP请设置为 * ）
-  HTTP_server_port: '65534', // HTTP服务器端口号
-  System_country: 'zh-cn', // 所在国家的国家代码
-  System_plugin_path: path.join(__dirname, './plugins'), // 插件路径
-  Session_Key: 'RESTfulAPI', // 生产环境务必随机设置一个值
-  Es_Base_URL: 'http://10.28.18.7:9200',
-  Es_Version: '5.6', // es版本
-  KeepWork_API_Base_URL: 'http://stage.keepwork.com/api/wiki/models/',
-  KeepWork_ENV: 'www',
-  db_type: 'mysql' // 数据库类型
+  // API服务器协议类型,包含"http://"或"https://"
+  API_server_type: process.env.API_SERVER_TYPE,
+
+  // API服务器暴露的域名地址,请勿添加"http://"
+  API_server_host: process.env.API_SERVER_HOST,
+
+  // API服务器监听的端口号
+  API_server_port: process.env.API_SERVER_PORT,
+
+  // HTTP服务器协议类型,包含"http://"或"https://"
+  HTTP_server_type: process.env.HTTP_SERVER_TYPE,
+
+  // HTTP服务器地址,请勿添加"http://" （即前端调用使用的服务器地址，如果是APP请设置为 * ）
+  HTTP_server_host: process.env.HTTP_SERVER_HOST,
+
+  // HTTP服务器端口号
+  HTTP_server_port: process.env.HTTP_SERVER_PORT,
+
+  // 所在国家的国家代码
+  System_country: process.env.SYSTEM_COUNTRY,
+
+  // 插件路径
+  System_plugin_path: path.join(__dirname, './plugins'),
+
+  // 生产环境务必随机设置一个值
+  Session_Key: process.env.SESSION_KEY,
+  Es_Base_URL: process.env.ES_BASE_URL,
+  Es_Version: process.env.ES_VERSION,
+  KeepWork_API_Base_URL: process.env.KEEPWORK_API_BASE_URL,
+  KeepWork_ENV: process.env.KEEPWORK_ENV
 }
 
 export let DB = {

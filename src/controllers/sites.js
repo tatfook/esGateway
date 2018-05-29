@@ -7,8 +7,8 @@ import {
   updateVisibility as updatePagesVisibility
 } from './pages'
 
-let index = `${SystemConfig.KeepWork_ENV}_kw_websites`
-let type = 'websites'
+const index = `${SystemConfig.KeepWork_ENV}_kw_websites`
+const type = 'websites'
 
 export const search = async (ctx, next) => {
   validateSearch(ctx)
@@ -85,15 +85,15 @@ export const updateVisibility = async (ctx, next) => {
   ctx.body.updated = true
 }
 
-const validateCreate = ctx => {
+export const validateCreate = ctx => {
   ctx.checkBody('username').notEmpty('required').len(4, 30, 'invalid length')
   ctx.checkBody('sitename').notEmpty('required')
   ctx.checkBody('logoUrl').notEmpty('required').isUrl('must be an url')
-  ctx.checkBody('displayName').optional()
   ctx.checkBody('desc').optional()
   if (ctx.errors) ctx.throw(400)
 
   let reqBody = ctx.request.body
+  ctx.checkBody('displayName').default(reqBody.sitename)
   reqBody.url = `/${reqBody.username}/${reqBody.sitename}`
   return {
     username: reqBody.username,
@@ -106,7 +106,7 @@ const validateCreate = ctx => {
   }
 }
 
-const validateUpdate = ctx => {
+export const validateUpdate = ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
   ctx.checkBody('displayName').optional()
   ctx.checkBody('desc').optional()
@@ -122,15 +122,15 @@ const validateUpdate = ctx => {
   }
 }
 
-const validateSearch = ctx => {
+export const validateSearch = ctx => {
   ctx.checkQuery('q').notEmpty('required')
-  ctx.checkQuery('page').optional().default(1).isNumeric()
-  ctx.checkQuery('size').optional().default(10).isNumeric()
+  ctx.checkQuery('page').default(1).isInt('must be an int')
+  ctx.checkQuery('size').default(20).isInt('must be an int')
   ctx.checkQuery('username').optional()
   if (ctx.errors) ctx.throw(400)
 }
 
-const getSearchDSL = ctx => {
+export const getSearchDSL = ctx => {
   return {
     query: {
       multi_match: {
@@ -153,7 +153,7 @@ const getSearchDSL = ctx => {
   }
 }
 
-const wrapSearchResult = data => {
+export const wrapSearchResult = data => {
   let hits = []
   data.hits.hits.forEach(hit => {
     hit._source.highlight = hit.highlight

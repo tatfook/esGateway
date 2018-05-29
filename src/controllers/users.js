@@ -2,8 +2,8 @@ import esClient from '../services/elasticsearch'
 import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
 
-let index = `${SystemConfig.KeepWork_ENV}_kw_users`
-let type = 'users'
+const index = `${SystemConfig.KeepWork_ENV}_kw_users`
+const type = 'users'
 
 export const search = async (ctx, next) => {
   validateSearch(ctx)
@@ -74,8 +74,9 @@ export const remove = async (ctx, next) => {
   })
 }
 
-const validateCreate = ctx => {
+export const validateCreate = ctx => {
   ctx.checkBody('username').notEmpty('required').len(4, 30, 'invalid length')
+    .notContains(' ', 'can not contains invalid chars')
   ctx.checkBody('portrait').notEmpty('required').isUrl('must be an url')
   ctx.checkBody('location').optional()
   if (ctx.errors) ctx.throw(400)
@@ -92,7 +93,7 @@ const validateCreate = ctx => {
   }
 }
 
-const validateUpdate = ctx => {
+export const validateUpdate = ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
   ctx.checkBody('portrait').optional().isUrl('must be an url')
   ctx.checkBody('displayName').optional()
@@ -108,15 +109,14 @@ const validateUpdate = ctx => {
   }
 }
 
-const validateSearch = ctx => {
+export const validateSearch = ctx => {
   ctx.checkQuery('q').notEmpty('required')
-  ctx.checkQuery('page').optional().default(1).isNumeric()
-  ctx.checkQuery('size').optional().default(10).isNumeric()
-  ctx.checkQuery('username').optional()
+  ctx.checkQuery('page').default(1).isInt('must be an int')
+  ctx.checkQuery('size').default(20).isInt('must be an int')
   if (ctx.errors) ctx.throw(400)
 }
 
-const getSearchDSL = ctx => {
+export const getSearchDSL = ctx => {
   return {
     query: {
       multi_match: {
@@ -136,7 +136,7 @@ const getSearchDSL = ctx => {
   }
 }
 
-const wrapSearchResult = data => {
+export const wrapSearchResult = data => {
   let hits = []
   data.hits.hits.forEach(hit => {
     hit._source.highlight = hit.highlight

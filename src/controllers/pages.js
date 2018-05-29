@@ -2,8 +2,8 @@ import esClient from '../services/elasticsearch'
 import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
 
-let index = `${SystemConfig.KeepWork_ENV}_kw_pages`
-let type = 'pages'
+const index = `${SystemConfig.KeepWork_ENV}_kw_pages`
+const type = 'pages'
 
 export const search = async (ctx, next) => {
   validateSearch(ctx)
@@ -108,14 +108,20 @@ export const updateVisibility = async ctx => {
   })
 }
 
-const validateCreate = ctx => {
+export const validateCreate = ctx => {
   ctx.checkBody('url').notEmpty('required').match(/^\/.+\/.+\/.+/, 'invalid format')
   ctx.checkBody('source_url').notEmpty('required').isUrl('must be an url')
-  ctx.checkBody('visibility').optional().default('public').in(['public', 'private'], 'invalid')
+  ctx.checkBody('visibility').default('public').in(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
 
   let reqBody = ctx.request.body
-  let [username, sitename, pagename] = reqBody.url.split('/').slice(1)
+  let username, sitename, pagename
+  try {
+    [username, sitename, pagename] = reqBody.url.split('/').slice(1)
+  } catch (e) {
+    ctx.throw(500)
+  }
+
   return {
     url: reqBody.url,
     username: username,
@@ -127,7 +133,7 @@ const validateCreate = ctx => {
   }
 }
 
-const validateUpdate = ctx => {
+export const validateUpdate = ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
   ctx.checkBody('visibility').optional().in(['public', 'private'], 'invalid')
   ctx.checkBody('content').optional()
@@ -143,35 +149,43 @@ const validateUpdate = ctx => {
   }
 }
 
-const validateSearch = ctx => {
+export const validateSearch = ctx => {
   ctx.checkQuery('q').notEmpty('required')
-  ctx.checkQuery('page').optional().default(1).isNumeric()
-  ctx.checkQuery('size').optional().default(10).isNumeric()
+  ctx.checkQuery('page').optional().default(1).isInt('must be an int')
+  ctx.checkQuery('size').optional().default(20).isInt('must be an int')
   ctx.checkQuery('username').optional()
   if (ctx.errors) ctx.throw(400)
 }
 
-const validateRemoveSite = ctx => {
+export const validateRemoveSite = ctx => {
   let siteUrl = ctx.checkParams('id').notEmpty('required').isBase64('invalid')
     .decodeBase64().match(/^\/.+\/.+/, 'invalid').value
   if (ctx.errors) ctx.throw(400)
-  let splitedUrl = siteUrl.split('/')
-  ctx.request.body = { username: splitedUrl[1], sitename: splitedUrl[2] }
+  try {
+    let splitedUrl = siteUrl.split('/')
+    ctx.request.body = { username: splitedUrl[1], sitename: splitedUrl[2] }
+  } catch (e) {
+    ctx.throw(500)
+  }
 }
 
-const validateUpdateVisibility = ctx => {
+export const validateUpdateVisibility = ctx => {
   let siteUrl = ctx.checkParams('id').notEmpty('required').isBase64('invalid')
     .decodeBase64().match(/^\/.+\/.+/, 'invalid').value
-  ctx.checkBody('visibility').notEmpty('required').in(['public', 'private'], 'invalid')
+  ctx.checkBody('visibility').notEmpty('required').isIn(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
-  let splitedUrl = siteUrl.split('/')
-  ctx.request.body.username = splitedUrl[1]
-  ctx.request.body.sitename = splitedUrl[2]
+  try {
+    let splitedUrl = siteUrl.split('/')
+    ctx.request.body.username = splitedUrl[1]
+    ctx.request.body.sitename = splitedUrl[2]
+  } catch (e) {
+    ctx.throw(500)
+  }
 }
 
 // DSL(Domain Specific Language) is a json syntax used to
 // search data in elasticsearch
-const getSearchDSL = ctx => {
+export const getSearchDSL = ctx => {
   return {
     query: {
       bool: {
@@ -210,7 +224,7 @@ const getSearchDSL = ctx => {
   }
 }
 
-const getRemoveSiteDSL = ctx => {
+export const getRemoveSiteDSL = ctx => {
   return {
     query: {
       bool: {
@@ -223,7 +237,7 @@ const getRemoveSiteDSL = ctx => {
   }
 }
 
-const getUpdateVisibilityDSL = ctx => {
+export const getUpdateVisibilityDSL = ctx => {
   return {
     query: {
       bool: {
@@ -235,12 +249,12 @@ const getUpdateVisibilityDSL = ctx => {
     },
     script: {
       source: `ctx._source.visibility = "${ctx.request.body.visibility}"`, // script runs in es
-      'lang': 'painless'
+      lang: 'painless'
     }
   }
 }
 
-const wrapSearchResult = data => {
+export const wrapSearchResult = data => {
   let hits = []
   data.hits.hits.forEach(hit => {
     hit._source.highlight = hit.highlight

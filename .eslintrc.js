@@ -7,10 +7,12 @@ module.exports = {
   extends: 'standard',
   plugins: [
     'html',
-    'promise'
+    'promise',
+    "jest"
   ],
   env: {
-        'node': true
+        'node': true,
+        "jest/globals": true
   },
   rules: {
     // allow console

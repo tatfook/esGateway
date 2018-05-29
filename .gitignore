@@ -6,3 +6,8 @@ test/unit/coverage
 test/e2e/reports
 selenium-debug.log
 .idea/
+launch.json
+.vscode
+coverage
+.env
+.env.test
