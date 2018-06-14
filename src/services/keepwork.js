@@ -7,5 +7,5 @@ const client = axios.create({
 
 export const Page = {
   upsert: (params, config) => client.post('/pages/updateContent', params, config),
-  delete: (params, config) => client.delete('/pages/delete', params, config)
+  delete: (params, config) => client.post('/pages/delete', params, config)
 }
