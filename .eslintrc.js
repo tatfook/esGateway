@@ -12,7 +12,7 @@ module.exports = {
   ],
   env: {
         'node': true,
-        "jest/globals": true
+        'jest/globals': true
   },
   rules: {
     // allow console

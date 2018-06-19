@@ -1,11 +1,14 @@
 import path from 'path'
 import dotenv from 'dotenv'
 
+let option
+
+// 测试环境中，环境变量写入.env.test文件中
 if (process.env.NODE_ENV === 'test') {
-  dotenv.config({path: path.resolve(process.cwd(), 'test/.env')})
-} else {
-  dotenv.config()
+  option = { path: path.resolve(process.cwd(), '.env.test') }
 }
+const result = dotenv.config(option)
+if (result.error) { throw result.error }
 
 // 系统配置
 export let System = {
