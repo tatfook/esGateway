@@ -39,25 +39,33 @@ const initKoaBody = KoaBody({
 })
 
 const initLogger = (ctx, next) => {
-  const start = new Date()
-  return next().then(() => {
-    const ms = new Date() - start
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-  })
+  if (env === 'development') {
+    const start = new Date()
+    return next().then(() => {
+      const ms = new Date() - start
+      console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+    })
+  }
+  return next()
+}
+
+const checkContentType = (ctx, next) => {
+  if (ctx.is('application/json') || ctx.method === 'GET') {
+    return next()
+  }
+  ctx.throw(400, 'Content-Type must be application/json')
 }
 
 let middleWares = [
   initRequest,
   initKoaBody,
-  ErrorRoutesCatch(),
+  initLogger,
+  ErrorRoutesCatch,
+  checkContentType,
   MainRoutes.routes(),
   MainRoutes.allowedMethods(),
   ErrorRoutes()
 ]
-
-if (env === 'development') {
-  middleWares.push(initLogger)
-}
 
 export default (app) => {
   KoaValidate(app)

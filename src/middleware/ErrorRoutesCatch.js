@@ -13,7 +13,7 @@ class ErrorHandler {
   static 400 (ctx, err) {
     ctx.body.error = {
       type: 'Bad Request',
-      message: ctx.errors
+      message: ctx.errors || err.message
     }
   }
 
@@ -50,10 +50,8 @@ class ErrorHandler {
   }
 }
 
-export default function () {
-  return function (ctx, next) {
-    return next().catch((err) => {
-      ErrorHandler.handle(ctx, err)
-    })
-  }
+export default (ctx, next) => {
+  return next().catch(err => {
+    ErrorHandler.handle(ctx, err)
+  })
 }
