@@ -5,7 +5,7 @@ import { System as SystemConfig } from '../config'
 const index = `${SystemConfig.KeepWork_ENV}_kw_users`
 const type = 'users'
 
-export const search = async (ctx, next) => {
+export const search = async ctx => {
   validateSearch(ctx)
   let [from, size] = paginate(
     ctx.query.page,
@@ -19,13 +19,13 @@ export const search = async (ctx, next) => {
     body: getSearchDSL(ctx)
   }).then(data => {
     ctx.body = wrapSearchResult(data)
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Bad search request')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Bad search request')
   })
 }
 
-export const create = async (ctx, next) => {
+export const create = async ctx => {
   let user = validateCreate(ctx)
   let id = ctx.checkBody('username').encodeBase64().value
   await esClient.create({
@@ -36,13 +36,13 @@ export const create = async (ctx, next) => {
   }).then(data => {
     ctx.status = 201
     ctx.body = { created: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Already exists')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Already exists')
   })
 }
 
-export const update = async (ctx, next) => {
+export const update = async ctx => {
   let user = validateUpdate(ctx)
   let id = ctx.params.id
   await esClient.update({
@@ -52,13 +52,13 @@ export const update = async (ctx, next) => {
     body: { doc: user }
   }).then(data => {
     ctx.body = { updated: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Data not found')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Data not found')
   })
 }
 
-export const remove = async (ctx, next) => {
+export const remove = async ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
@@ -68,9 +68,9 @@ export const remove = async (ctx, next) => {
     id: id
   }).then(data => {
     ctx.body = { deleted: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Data not found')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Data not found')
   })
 }
 

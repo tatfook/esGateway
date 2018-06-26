@@ -10,7 +10,7 @@ import {
 const index = `${SystemConfig.KeepWork_ENV}_kw_websites`
 const type = 'websites'
 
-export const search = async (ctx, next) => {
+export const search = async ctx => {
   validateSearch(ctx)
   let [from, size] = paginate(
     ctx.query.page,
@@ -24,13 +24,13 @@ export const search = async (ctx, next) => {
     body: getSearchDSL(ctx)
   }).then(data => {
     ctx.body = wrapSearchResult(data)
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Bad search request')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Bad search request')
   })
 }
 
-export const create = async (ctx, next) => {
+export const create = async ctx => {
   let site = validateCreate(ctx)
   let id = ctx.checkBody('url').encodeBase64().value
   await esClient.create({
@@ -41,13 +41,13 @@ export const create = async (ctx, next) => {
   }).then(data => {
     ctx.status = 201
     ctx.body = { created: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Already exists')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Already exists')
   })
 }
 
-export const update = async (ctx, next) => {
+export const update = async ctx => {
   let site = validateUpdate(ctx)
   let id = ctx.params.id
   await esClient.update({
@@ -57,31 +57,31 @@ export const update = async (ctx, next) => {
     body: { doc: site }
   }).then(data => {
     ctx.body = { updated: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Data not found')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Data not found')
   })
 }
 
-export const remove = async (ctx, next) => {
+export const remove = async ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
-  await removeAllPages(ctx, next)
+  await removeAllPages(ctx)
   await esClient.delete({
     index: index,
     type: type,
     id: id
   }).then(data => {
     ctx.body.deleted = true
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Data not found')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Data not found')
   })
 }
 
-export const updateVisibility = async (ctx, next) => {
-  await updatePagesVisibility(ctx, next)
+export const updateVisibility = async ctx => {
+  await updatePagesVisibility(ctx)
   ctx.body.updated = true
 }
 

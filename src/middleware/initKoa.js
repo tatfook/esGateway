@@ -50,7 +50,7 @@ const initLogger = (ctx, next) => {
 }
 
 const checkContentType = (ctx, next) => {
-  if (ctx.is('application/json') || ctx.method === 'GET') {
+  if (ctx.is('application/json') || ctx.method === 'GET' || ctx.method === 'DELETE') {
     return next()
   }
   ctx.throw(400, 'Content-Type must be application/json')

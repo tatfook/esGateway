@@ -5,7 +5,7 @@ import { System as SystemConfig } from '../config'
 const index = `${SystemConfig.KeepWork_ENV}_kw_pages`
 const type = 'pages'
 
-export const search = async (ctx, next) => {
+export const search = async ctx => {
   validateSearch(ctx)
   let [from, size] = paginate(
     ctx.query.page,
@@ -19,13 +19,13 @@ export const search = async (ctx, next) => {
     body: getSearchDSL(ctx)
   }).then(data => {
     ctx.body = wrapSearchResult(data)
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Bad search request')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Bad search request')
   })
 }
 
-export const create = async (ctx, next) => {
+export const create = async ctx => {
   let page = validateCreate(ctx)
   let id = ctx.checkBody('url').encodeBase64().value
   await esClient.create({
@@ -36,13 +36,13 @@ export const create = async (ctx, next) => {
   }).then(data => {
     ctx.status = 201
     ctx.body = { created: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Already exists')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Already exists')
   })
 }
 
-export const update = async (ctx, next) => {
+export const update = async ctx => {
   let page = validateUpdate(ctx)
   let id = ctx.params.id
   await esClient.update({
@@ -52,13 +52,13 @@ export const update = async (ctx, next) => {
     body: { doc: page }
   }).then(data => {
     ctx.body = { updated: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Data not found')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Data not found')
   })
 }
 
-export const remove = async (ctx, next) => {
+export const remove = async ctx => {
   ctx.checkParams('id').notEmpty('required').isBase64('invalid')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
@@ -68,13 +68,13 @@ export const remove = async (ctx, next) => {
     id: id
   }).then(data => {
     ctx.body = { deleted: true }
-  }).catch(e => {
-    console.error(e)
-    ctx.throw(e.statusCode, 'Data not found')
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(err.statusCode, 'Data not found')
   })
 }
 
-export const removeSite = async (ctx, next) => {
+export const removeSite = async ctx => {
   validateRemoveSite(ctx)
   await esClient.deleteByQuery({
     index: index,
@@ -85,8 +85,8 @@ export const removeSite = async (ctx, next) => {
       total_pages: data.total,
       deleted_pages: data.deleted
     }
-  }).catch(e => {
-    console.error(e)
+  }).catch(err => {
+    console.error(err)
     ctx.throw(500, 'Fail to delete pages of this website')
   })
 }
@@ -102,8 +102,8 @@ export const updateVisibility = async ctx => {
       total_pages: data.total,
       updated_pages: data.updated
     }
-  }).catch(e => {
-    console.error(e)
+  }).catch(err => {
+    console.error(err)
     ctx.throw(500, 'Fail to update pages of this website')
   })
 }
@@ -118,7 +118,7 @@ export const validateCreate = ctx => {
   let username, sitename, pagename
   try {
     [username, sitename, pagename] = reqBody.url.split('/').slice(1)
-  } catch (e) {
+  } catch (err) {
     ctx.throw(500)
   }
 
@@ -164,7 +164,7 @@ export const validateRemoveSite = ctx => {
   try {
     let splitedUrl = siteUrl.split('/')
     ctx.request.body = { username: splitedUrl[1], sitename: splitedUrl[2] }
-  } catch (e) {
+  } catch (err) {
     ctx.throw(500)
   }
 }
@@ -178,7 +178,7 @@ export const validateUpdateVisibility = ctx => {
     let splitedUrl = siteUrl.split('/')
     ctx.request.body.username = splitedUrl[1]
     ctx.request.body.sitename = splitedUrl[2]
-  } catch (e) {
+  } catch (err) {
     ctx.throw(500)
   }
 }

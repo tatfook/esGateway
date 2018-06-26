@@ -4,8 +4,8 @@ class ErrorHandler {
       ctx.status = err.status
       ctx.body = { status: err.status }
       this[err.status](ctx, err)
-    } catch (e) {
-      console.log(e)
+    } catch (handlerNotFountErr) {
+      console.log(handlerNotFountErr)
       this[500](ctx, err)
     }
   }
