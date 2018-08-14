@@ -117,7 +117,8 @@ export const validateCreate = ctx => {
   let reqBody = ctx.request.body
   let username, sitename, pagename
   try {
-    [username, sitename, pagename] = reqBody.url.split('/').slice(1)
+    [username, sitename] = reqBody.url.split('/').slice(1)
+    pagename = reqBody.url.replace(`/${username}/${sitename}/`, '')
   } catch (err) {
     ctx.throw(500)
   }
