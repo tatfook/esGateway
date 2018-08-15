@@ -110,7 +110,7 @@ describe('while updating a site', () => {
     let displayName = 'differentsitename'
     let url = `/${username}/${sitename}`
     let ctx = new MockContext()
-      .setParams({ id: Buffer.from(url).toString('base64') })
+      .setParams({ id: encodeURIComponent(url) })
       .setReqBody({
         logoUrl: logoUrl,
         desc: desc,
@@ -136,16 +136,6 @@ describe('while updating a site', () => {
       expect(ctx1.errors).toEqual([
         { id: 'required' },
         { logoUrl: 'must be an url' }
-      ])
-    })
-
-    test('2', () => {
-      let ctx1 = new MockContext()
-        .setParams({ id: 'not a base64' })
-      validateUpdate(ctx1)
-      expect(ctx1.status).toBe(400)
-      expect(ctx1.errors).toEqual([
-        { id: 'invalid' }
       ])
     })
   })

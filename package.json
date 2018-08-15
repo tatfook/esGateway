@@ -1,5 +1,5 @@
 {
-  "name": "esGateway",
+  "name": "es-gateway",
   "version": "1.0.0",
   "description": "keepwork elasticsearch gateway",
   "author": "Keepwork Team",

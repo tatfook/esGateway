@@ -12,7 +12,7 @@ const agent = createAgent()
 describe('get /users/search', () => {
   test('success', async () => {
     let response = await agent
-      .get('/users/search?q=test&page=2&size=10')
+      .get('/v0/users/search?q=test&page=2&size=10')
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
     expect(response.body).toHaveProperty('total')
@@ -29,7 +29,7 @@ describe('post /users', () => {
       location: 'shenzhen'
     }
     let response = await agent
-      .post('/users')
+      .post('/v0/users')
       .send(user)
       .set('Accept', 'application/json')
     expect(response.status).toBe(201)
@@ -39,14 +39,14 @@ describe('post /users', () => {
 
 describe('put /users/:id', () => {
   test('success', async () => {
-    let id = Buffer.from('test').toString('base64')
+    let id = encodeURI('test')
     let user = {
       portrait: 'keepwork.com',
       displayName: 'testusername',
       location: 'shenzhen'
     }
     let response = await agent
-      .put(`/users/${id}`)
+      .put(`/v0/users/${id}`)
       .send(user)
       .set('Accept', 'application/json')
     expect(response.status).toBe(200)
@@ -56,9 +56,9 @@ describe('put /users/:id', () => {
 
 describe('delete /users/:id', () => {
   test('success', async () => {
-    let id = Buffer.from('test').toString('base64')
+    let id = encodeURI('test')
     let response = await agent
-      .delete(`/users/${id}`)
+      .delete(`/v0/users/${id}`)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()
   })

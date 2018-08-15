@@ -87,7 +87,7 @@ describe('while updated a page', () => {
     let content = 'it is a nice page'
     let tags = ['npl', 'es', 'lua', 'cs', 'nodejs']
     const ctx = new MockContext()
-      .setParams({ id: Buffer.from(url).toString('base64') })
+      .setParams({ id: encodeURIComponent(url) })
       .setReqBody({
         visibility: visibility,
         content: content,
@@ -104,7 +104,7 @@ describe('while updated a page', () => {
   describe('invalid params', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: 'not a base64' })
+        .setParams({ id: encodeURIComponent('not a base64') })
         .setReqBody({
           visibility: 'invalid value',
           tags: ['it', 'is', 'over', 'than', 'five', 'members']
@@ -112,7 +112,6 @@ describe('while updated a page', () => {
       validateUpdate(ctx)
       expect(ctx.status).toBe(400)
       expect(ctx.errors).toEqual([
-        { id: 'invalid' },
         { visibility: 'invalid' },
         { tags: 'Too many members' }
       ])
@@ -168,7 +167,7 @@ describe('while deleting all pages of a site', () => {
   describe('valid params', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: Buffer.from('/testuser/testsite').toString('base64') })
+        .setParams({ id: encodeURIComponent('/testuser/testsite') })
       validateRemoveSite(ctx)
       expect(ctx.status).toBe(200)
     })
@@ -177,7 +176,7 @@ describe('while deleting all pages of a site', () => {
   describe('ivalid params', () => {
     test('1', () => {
       const ctx1 = new MockContext()
-        .setParams({ id: Buffer.from('not a url').toString('base64') })
+        .setParams({ id: encodeURIComponent('not a url') })
       validateRemoveSite(ctx1)
       expect(ctx1.status).toBe(400)
       expect(ctx1.errors).toEqual([
@@ -200,7 +199,7 @@ describe('while updating all pages of a site', () => {
   describe('valid params', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: Buffer.from('/testuser/testsite').toString('base64') })
+        .setParams({ id: encodeURIComponent('/testuser/testsite') })
         .setReqBody({ visibility: 'private' })
       validateUpdateVisibility(ctx)
       expect(ctx.status).toBe(200)
@@ -210,7 +209,7 @@ describe('while updating all pages of a site', () => {
   describe('ivalid params', () => {
     test('1', () => {
       const ctx1 = new MockContext()
-        .setParams({ id: Buffer.from('not a url').toString('base64') })
+        .setParams({ id: encodeURIComponent('not a url') })
         .setReqBody({ visibility: 'out of range' })
       validateUpdateVisibility(ctx1)
       expect(ctx1.status).toBe(400)
@@ -326,7 +325,7 @@ describe('while generating DSL', () => {
   describe('getRemoveSiteDSL', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: Buffer.from('/testuser/testsite').toString('base64') })
+        .setParams({ id: encodeURIComponent('/testuser/testsite') })
       validateRemoveSite(ctx)
       const DSL = getRemoveSiteDSL(ctx)
       expect(DSL).toEqual({
@@ -345,7 +344,7 @@ describe('while generating DSL', () => {
   describe('getUpdateVisibilityDSL', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: Buffer.from('/testuser/testsite').toString('base64') })
+        .setParams({ id: encodeURIComponent('/testuser/testsite') })
         .setReqBody({ visibility: 'private' })
       validateUpdateVisibility(ctx)
       const DSL = getUpdateVisibilityDSL(ctx)

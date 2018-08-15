@@ -1,7 +1,8 @@
 import KoaRouter from 'koa-router'
 import controllers from '../controllers/index'
+import { urlPrefix } from '../config'
 
-const mainRouter = new KoaRouter()
+const mainRouter = new KoaRouter({ prefix: urlPrefix })
 const pagesRouter = new KoaRouter({ prefix: '/pages' })
 const sitesRouter = new KoaRouter({ prefix: '/sites' })
 const usersRouter = new KoaRouter({ prefix: '/users' })

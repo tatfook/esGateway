@@ -13,7 +13,7 @@ const agent = createAgent()
 describe('get /sites/search', () => {
   test('success', async () => {
     let response = await agent
-      .get('/sites/search?q=test&page=2&size=10')
+      .get('/v0/sites/search?q=test&page=2&size=10')
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
     expect(response.body).toHaveProperty('total')
@@ -31,7 +31,7 @@ describe('post /sites', () => {
       desc: 'nice page'
     }
     let response = await agent
-      .post('/sites')
+      .post('/v0/sites')
       .send(page)
       .set('Accept', 'application/json')
     expect(response.status).toBe(201)
@@ -41,14 +41,14 @@ describe('post /sites', () => {
 
 describe('put /sites/:id', () => {
   test('success', async () => {
-    let id = Buffer.from('/user1/site1').toString('base64')
+    let id = encodeURIComponent('/user1/site1')
     let page = {
       content: 'It is a very nice page',
       displayName: 'nicesite',
       desc: 'best site',
       logoUrl: 'git.keepwork.com'
     }
-    let response = await agent.put(`/sites/${id}`)
+    let response = await agent.put(`/v0/sites/${id}`)
       .send(page)
       .set('Accept', 'application/json')
     expect(response.status).toBe(200)
@@ -58,8 +58,8 @@ describe('put /sites/:id', () => {
 
 describe('delete /sites/:id', () => {
   test('success', async () => {
-    let id = Buffer.from('/user1/site1').toString('base64')
-    let response = await agent.delete(`/sites/${id}`)
+    let id = encodeURIComponent('/user1/site1')
+    let response = await agent.delete(`/v0/sites/${id}`)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()
   })
@@ -67,11 +67,11 @@ describe('delete /sites/:id', () => {
 
 describe('put /:id/visibility', () => {
   test('success', async () => {
-    let id = Buffer.from('/user1/site1').toString('base64')
+    let id = encodeURIComponent('/user1/site1')
     let page = {
       visibility: 'private'
     }
-    let response = await agent.put(`/sites/${id}/visibility`)
+    let response = await agent.put(`/v0/sites/${id}/visibility`)
       .send(page)
       .set('Accept', 'application/json')
     expect(response.status).toBe(200)

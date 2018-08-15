@@ -77,7 +77,7 @@ describe('while creating a user', () => {
 describe('while updating a user', () => {
   test('valid params', () => {
     let username = 'username'
-    let id = Buffer.from(username).toString('base64')
+    let id = encodeURIComponent(username)
     let portrait = 'keepwork.com'
     let displayName = 'user1'
     let location = 'Shenzhen'
@@ -108,16 +108,6 @@ describe('while updating a user', () => {
       expect(ctx1.errors).toEqual([
         { id: 'required' },
         { portrait: 'must be an url' }
-      ])
-    })
-
-    test('2', () => {
-      let ctx2 = new MockContext()
-        .setParams({ id: 'not a base64' })
-      validateUpdate(ctx2)
-      expect(ctx2.status).toBe(400)
-      expect(ctx2.errors).toEqual([
-        { id: 'invalid' }
       ])
     })
   })

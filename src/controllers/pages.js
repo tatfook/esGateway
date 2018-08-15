@@ -27,7 +27,7 @@ export const search = async ctx => {
 
 export const create = async ctx => {
   let page = validateCreate(ctx)
-  let id = ctx.checkBody('url').encodeBase64().value
+  let id = ctx.checkBody('url').encodeURIComponent().value
   await esClient.create({
     index: index,
     type: type,
@@ -59,7 +59,7 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
-  ctx.checkParams('id').notEmpty('required').isBase64('invalid')
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
   await esClient.delete({
@@ -128,6 +128,7 @@ export const validateCreate = ctx => {
     username: username,
     sitename: sitename,
     pagename: pagename,
+    content: reqBody.content || '',
     source_url: reqBody.source_url,
     visibility: reqBody.visibility,
     update_time: getDatetime()
@@ -135,7 +136,7 @@ export const validateCreate = ctx => {
 }
 
 export const validateUpdate = ctx => {
-  ctx.checkParams('id').notEmpty('required').isBase64('invalid')
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   ctx.checkBody('visibility').optional().in(['public', 'private'], 'invalid')
   ctx.checkBody('content').optional()
   ctx.checkBody('tags').optional().len(0, 5, 'Too many members')
@@ -159,8 +160,8 @@ export const validateSearch = ctx => {
 }
 
 export const validateRemoveSite = ctx => {
-  let siteUrl = ctx.checkParams('id').notEmpty('required').isBase64('invalid')
-    .decodeBase64().match(/^\/.+\/.+/, 'invalid').value
+  let siteUrl = ctx.checkParams('id').notEmpty('required')
+    .decodeURIComponent().match(/^\/.+\/.+/, 'invalid').value
   if (ctx.errors) ctx.throw(400)
   try {
     let splitedUrl = siteUrl.split('/')
@@ -171,8 +172,8 @@ export const validateRemoveSite = ctx => {
 }
 
 export const validateUpdateVisibility = ctx => {
-  let siteUrl = ctx.checkParams('id').notEmpty('required').isBase64('invalid')
-    .decodeBase64().match(/^\/.+\/.+/, 'invalid').value
+  let siteUrl = ctx.checkParams('id').notEmpty('required')
+    .decodeURIComponent().match(/^\/.+\/.+/, 'invalid').value
   ctx.checkBody('visibility').notEmpty('required').isIn(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
   try {

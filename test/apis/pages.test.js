@@ -12,7 +12,7 @@ const agent = createAgent()
 describe('get /pages/search', () => {
   test('success', async () => {
     let response = await agent
-      .get('/pages/search?q=test&page=2&size=10')
+      .get('/v0/pages/search?q=test&page=2&size=10')
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
     expect(response.body).toHaveProperty('total')
@@ -29,7 +29,7 @@ describe('post /pages', () => {
       visibility: 'public'
     }
     let response = await agent
-      .post('/pages')
+      .post('/v0/pages')
       .send(page)
       .set('Accept', 'application/json')
     expect(response.status).toBe(201)
@@ -39,13 +39,13 @@ describe('post /pages', () => {
 
 describe('put /pages/:id', () => {
   test('success', async () => {
-    let id = Buffer.from('/user1/site1/page1').toString('base64')
+    let id = encodeURIComponent('/user1/site1/page1')
     let page = {
       content: 'It is a very nice page',
       tags: ['cs', 'nodejs']
     }
     let response = await agent
-      .put(`/pages/${id}`)
+      .put(`/v0/pages/${id}`)
       .send(page)
       .set('Accept', 'application/json')
     expect(response.status).toBe(200)
@@ -55,9 +55,9 @@ describe('put /pages/:id', () => {
 
 describe('delete /pages/:id', () => {
   test('success', async () => {
-    let id = Buffer.from('/user1/site1/page1').toString('base64')
+    let id = encodeURIComponent('/user1/site1/page1')
     let response = await agent
-      .delete(`/pages/${id}`)
+      .delete(`/v0/pages/${id}`)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()
   })

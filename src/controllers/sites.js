@@ -32,7 +32,7 @@ export const search = async ctx => {
 
 export const create = async ctx => {
   let site = validateCreate(ctx)
-  let id = ctx.checkBody('url').encodeBase64().value
+  let id = ctx.checkBody('url').encodeURIComponent().value
   await esClient.create({
     index: index,
     type: type,
@@ -64,7 +64,7 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
-  ctx.checkParams('id').notEmpty('required').isBase64('invalid')
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
   await removeAllPages(ctx)
@@ -107,7 +107,7 @@ export const validateCreate = ctx => {
 }
 
 export const validateUpdate = ctx => {
-  ctx.checkParams('id').notEmpty('required').isBase64('invalid')
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   ctx.checkBody('displayName').optional()
   ctx.checkBody('desc').optional()
   ctx.checkBody('logoUrl').optional().isUrl('must be an url')

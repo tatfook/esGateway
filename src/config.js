@@ -44,6 +44,8 @@ export let System = {
   KeepWork_ENV: process.env.KEEPWORK_ENV
 }
 
+export const urlPrefix = '/v0'
+
 export let DB = {
   host: 'localhost', // 服务器地址
   port: 3306, // 数据库端口号
