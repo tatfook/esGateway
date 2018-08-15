@@ -1,6 +1,8 @@
 import esClient from '../services/elasticsearch'
 import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
+import { removeUser as removeAllPages } from './pages'
+import { removeUser as removeAllsites } from './sites'
 
 const index = `${SystemConfig.KeepWork_ENV}_kw_users`
 const type = 'users'
@@ -27,7 +29,7 @@ export const search = async ctx => {
 
 export const create = async ctx => {
   let user = validateCreate(ctx)
-  let id = ctx.checkBody('username').encodeURIComponent().value
+  let id = ctx.checkBody('username').value
   await esClient.create({
     index: index,
     type: type,
@@ -59,9 +61,11 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
-  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
+  ctx.checkParams('id').notEmpty('required')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
+  await removeAllPages(ctx)
+  await removeAllsites(ctx)
   await esClient.delete({
     index: index,
     type: type,
@@ -94,7 +98,7 @@ export const validateCreate = ctx => {
 }
 
 export const validateUpdate = ctx => {
-  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
+  ctx.checkParams('id').notEmpty('required')
   ctx.checkBody('portrait').optional().isUrl('must be an url')
   ctx.checkBody('displayName').optional()
   ctx.checkBody('location').optional()

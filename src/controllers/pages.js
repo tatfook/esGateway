@@ -59,7 +59,7 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
-  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
+  ctx.checkParams('id').notEmpty('required')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
   await esClient.delete({
@@ -88,6 +88,23 @@ export const removeSite = async ctx => {
   }).catch(err => {
     console.error(err)
     ctx.throw(500, 'Fail to delete pages of this website')
+  })
+}
+
+export const removeUser = async ctx => {
+  validateRemoveUser(ctx)
+  await esClient.deleteByQuery({
+    index: index,
+    type: type,
+    body: getRemoveUserDSL(ctx)
+  }).then(data => {
+    ctx.body = {
+      total_pages: data.total,
+      deleted_pages: data.deleted
+    }
+  }).catch(err => {
+    console.error(err)
+    ctx.throw(500, 'Fail to delete pages of this user')
   })
 }
 
@@ -136,7 +153,7 @@ export const validateCreate = ctx => {
 }
 
 export const validateUpdate = ctx => {
-  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
+  ctx.checkParams('id').notEmpty('required')
   ctx.checkBody('visibility').optional().in(['public', 'private'], 'invalid')
   ctx.checkBody('content').optional()
   ctx.checkBody('tags').optional().len(0, 5, 'Too many members')
@@ -166,6 +183,16 @@ export const validateRemoveSite = ctx => {
   try {
     let splitedUrl = siteUrl.split('/')
     ctx.request.body = { username: splitedUrl[1], sitename: splitedUrl[2] }
+  } catch (err) {
+    ctx.throw(500)
+  }
+}
+
+export const validateRemoveUser = ctx => {
+  let username = ctx.checkParams('id').notEmpty('required').value
+  if (ctx.errors) ctx.throw(400)
+  try {
+    ctx.request.body = { username }
   } catch (err) {
     ctx.throw(500)
   }
@@ -233,6 +260,18 @@ export const getRemoveSiteDSL = ctx => {
         must: [
           { term: { username: ctx.request.body.username } },
           { term: { sitename: ctx.request.body.sitename } }
+        ]
+      }
+    }
+  }
+}
+
+export const getRemoveUserDSL = ctx => {
+  return {
+    query: {
+      bool: {
+        must: [
+          { term: { username: ctx.request.body.username } }
         ]
       }
     }
