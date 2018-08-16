@@ -20,7 +20,7 @@ export const search = async ctx => {
   }).then(data => {
     ctx.body = wrapSearchResult(data)
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(err.statusCode, 'Bad search request')
   })
 }
@@ -37,7 +37,7 @@ export const create = async ctx => {
     ctx.status = 201
     ctx.body = { created: true }
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(err.statusCode, 'Already exists')
   })
 }
@@ -53,7 +53,7 @@ export const update = async ctx => {
   }).then(data => {
     ctx.body = { updated: true }
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(err.statusCode, 'Data not found')
   })
 }
@@ -69,7 +69,7 @@ export const remove = async ctx => {
   }).then(data => {
     ctx.body = { deleted: true }
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(err.statusCode, 'Data not found')
   })
 }
@@ -86,7 +86,7 @@ export const removeSite = async ctx => {
       deleted_pages: data.deleted
     }
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(500, 'Fail to delete pages of this website')
   })
 }
@@ -103,7 +103,7 @@ export const removeUser = async ctx => {
       deleted_pages: data.deleted
     }
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(500, 'Fail to delete pages of this user')
   })
 }
@@ -120,7 +120,7 @@ export const updateVisibility = async ctx => {
       updated_pages: data.updated
     }
   }).catch(err => {
-    console.error(err)
+    ctx.logger.error(err)
     ctx.throw(500, 'Fail to update pages of this website')
   })
 }

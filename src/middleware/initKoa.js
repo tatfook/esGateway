@@ -1,11 +1,12 @@
 import KoaBody from 'koa-body'
 import KoaValidate from 'koa-validate'
 import compose from 'koa-compose'
-import { System as SystemConfig } from '../config'
+import { System as SystemConfig, logPath } from '../config'
 import path from 'path'
 import MainRoutes from '../routes/main-routes'
 import ErrorRoutesCatch from './ErrorRoutesCatch'
 import ErrorRoutes from '../routes/error-routes'
+import bunyan from 'bunyan'
 
 const env = process.env.NODE_ENV || 'development' // Current mode
 
@@ -38,7 +39,25 @@ const initKoaBody = KoaBody({
   textLimit: '10mb'
 })
 
+const logger = bunyan.createLogger({
+  name: 'es-gateway',
+  streams: [
+    {
+      stream: process.stdout,
+      level: 'info'
+    },
+    {
+      type: 'rotating-file',
+      path: logPath || '.',
+      period: '1d',
+      level: 'error',
+      count: 3
+    }
+  ]
+})
+
 const initLogger = (ctx, next) => {
+  ctx.logger = logger
   if (env === 'development') {
     const start = new Date()
     return next().then(() => {
@@ -57,9 +76,9 @@ const checkContentType = (ctx, next) => {
 }
 
 let middleWares = [
+  initLogger,
   initRequest,
   initKoaBody,
-  initLogger,
   ErrorRoutesCatch,
   checkContentType,
   MainRoutes.routes(),
@@ -69,5 +88,6 @@ let middleWares = [
 
 export default (app) => {
   KoaValidate(app)
+  app.logger = logger
   app.use(compose(middleWares))
 }

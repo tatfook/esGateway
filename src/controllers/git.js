@@ -24,7 +24,7 @@ export const commit = async ctx => {
     ctx.body = result
   } else {
     // raise error
-    console.error('Failed to commit file to es: ' + path)
+    ctx.logger.error('Failed to commit file to es: ' + path)
     ctx.body = {message: 'invalid file type'}
   }
 }

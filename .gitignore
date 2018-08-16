@@ -11,3 +11,5 @@ launch.json
 coverage
 .env
 .env.test
+logs/
+*.log

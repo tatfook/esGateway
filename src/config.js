@@ -46,6 +46,8 @@ export let System = {
 
 export const urlPrefix = '/v0'
 
+export const logPath = 'logs/es-gateway.log'
+
 export let DB = {
   host: 'localhost', // 服务器地址
   port: 3306, // 数据库端口号
