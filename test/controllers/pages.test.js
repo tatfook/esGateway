@@ -167,7 +167,7 @@ describe('while deleting all pages of a site', () => {
   describe('valid params', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: encodeURIComponent('/testuser/testsite') })
+        .setParams({ id: '/testuser/testsite' })
       validateRemoveSite(ctx)
       expect(ctx.status).toBe(200)
     })
@@ -199,7 +199,7 @@ describe('while updating all pages of a site', () => {
   describe('valid params', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: encodeURIComponent('/testuser/testsite') })
+        .setParams({ id: '/testuser/testsite' })
         .setReqBody({ visibility: 'private' })
       validateUpdateVisibility(ctx)
       expect(ctx.status).toBe(200)
@@ -325,7 +325,7 @@ describe('while generating DSL', () => {
   describe('getRemoveSiteDSL', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: encodeURIComponent('/testuser/testsite') })
+        .setParams({ id: '/testuser/testsite' })
       validateRemoveSite(ctx)
       const DSL = getRemoveSiteDSL(ctx)
       expect(DSL).toEqual({
@@ -344,7 +344,7 @@ describe('while generating DSL', () => {
   describe('getUpdateVisibilityDSL', () => {
     test('1', () => {
       const ctx = new MockContext()
-        .setParams({ id: encodeURIComponent('/testuser/testsite') })
+        .setParams({ id: '/testuser/testsite' })
         .setReqBody({ visibility: 'private' })
       validateUpdateVisibility(ctx)
       const DSL = getUpdateVisibilityDSL(ctx)

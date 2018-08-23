@@ -1,6 +1,7 @@
 import esClient from '../services/elasticsearch'
 import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
+import { ensureAdmin } from '../extend/context'
 
 import {
   removeSite as removeAllPages,
@@ -31,6 +32,7 @@ export const search = async ctx => {
 }
 
 export const create = async ctx => {
+  ensureAdmin(ctx)
   let site = validateCreate(ctx)
   let id = ctx.checkBody('url').encodeURIComponent().value
   await esClient.create({
@@ -48,6 +50,7 @@ export const create = async ctx => {
 }
 
 export const update = async ctx => {
+  ensureAdmin(ctx)
   let site = validateUpdate(ctx)
   let id = ctx.params.id
   await esClient.update({
@@ -64,9 +67,10 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
+  ensureAdmin(ctx)
   ctx.checkParams('id').notEmpty('required')
   if (ctx.errors) ctx.throw(400)
-  let id = ctx.params.id
+  let id = encodeURIComponent(ctx.params.id)
   await removeAllPages(ctx)
   await esClient.delete({
     index: index,
@@ -81,6 +85,7 @@ export const remove = async ctx => {
 }
 
 export const updateVisibility = async ctx => {
+  ensureAdmin(ctx)
   await updatePagesVisibility(ctx)
   ctx.body.updated = true
 }
@@ -124,7 +129,7 @@ export const validateCreate = ctx => {
 }
 
 export const validateUpdate = ctx => {
-  ctx.checkParams('id').notEmpty('required')
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   ctx.checkBody('displayName').optional()
   ctx.checkBody('desc').optional()
   ctx.checkBody('logoUrl').optional().isUrl('must be an url')

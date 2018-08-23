@@ -37,22 +37,17 @@ export let System = {
   System_plugin_path: path.join(__dirname, './plugins'),
 
   // 生产环境务必随机设置一个值
-  Session_Key: process.env.SESSION_KEY,
   Es_Base_URL: process.env.ES_BASE_URL,
   Es_Version: process.env.ES_VERSION,
   KeepWork_API_Base_URL: process.env.KEEPWORK_API_BASE_URL,
   KeepWork_ENV: process.env.KEEPWORK_ENV
 }
 
+export const jwt = {
+  secret: process.env.SECRET,
+  passthrough: true
+}
+
 export const urlPrefix = '/v0'
 
 export const logPath = 'logs/es-gateway.log'
-
-export let DB = {
-  host: 'localhost', // 服务器地址
-  port: 3306, // 数据库端口号
-  username: 'admin', // 数据库用户名
-  password: 'admin888', // 数据库密码
-  database: 'development', // 数据库名称
-  prefix: 'api_' // 默认"api_"
-}

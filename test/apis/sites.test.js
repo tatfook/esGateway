@@ -9,11 +9,13 @@
 import createAgent from '../helper/superAgent'
 
 const agent = createAgent()
+const token = process.env.TEST_TOKEN
 
 describe('get /sites/search', () => {
   test('success', async () => {
     let response = await agent
       .get('/v0/sites/search?q=test&page=2&size=10')
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
     expect(response.body).toHaveProperty('total')
@@ -34,6 +36,7 @@ describe('post /sites', () => {
       .post('/v0/sites')
       .send(page)
       .set('Accept', 'application/json')
+      .set('Authorization', token)
     expect(response.status).toBe(201)
     expect(response.body.created).toBeTruthy()
   })
@@ -51,6 +54,7 @@ describe('put /sites/:id', () => {
     let response = await agent.put(`/v0/sites/${id}`)
       .send(page)
       .set('Accept', 'application/json')
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.updated).toBeTruthy()
   })
@@ -60,6 +64,7 @@ describe('delete /sites/:id', () => {
   test('success', async () => {
     let id = encodeURIComponent('/user1/site1')
     let response = await agent.delete(`/v0/sites/${id}`)
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()
   })
@@ -74,6 +79,7 @@ describe('put /:id/visibility', () => {
     let response = await agent.put(`/v0/sites/${id}/visibility`)
       .send(page)
       .set('Accept', 'application/json')
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.updated).toBeTruthy()
   })

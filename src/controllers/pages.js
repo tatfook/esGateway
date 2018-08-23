@@ -1,6 +1,7 @@
 import esClient from '../services/elasticsearch'
 import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
+import { ensureAdmin } from '../extend/context'
 
 const index = `${SystemConfig.KeepWork_ENV}_kw_pages`
 const type = 'pages'
@@ -26,6 +27,7 @@ export const search = async ctx => {
 }
 
 export const create = async ctx => {
+  ensureAdmin(ctx)
   let page = validateCreate(ctx)
   let id = ctx.checkBody('url').encodeURIComponent().value
   await esClient.create({
@@ -43,6 +45,7 @@ export const create = async ctx => {
 }
 
 export const update = async ctx => {
+  ensureAdmin(ctx)
   let page = validateUpdate(ctx)
   let id = ctx.params.id
   await esClient.update({
@@ -59,7 +62,8 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
-  ctx.checkParams('id').notEmpty('required')
+  ensureAdmin(ctx)
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id
   await esClient.delete({
@@ -153,7 +157,7 @@ export const validateCreate = ctx => {
 }
 
 export const validateUpdate = ctx => {
-  ctx.checkParams('id').notEmpty('required')
+  ctx.checkParams('id').encodeURIComponent().notEmpty('required')
   ctx.checkBody('visibility').optional().in(['public', 'private'], 'invalid')
   ctx.checkBody('content').optional()
   ctx.checkBody('tags').optional().len(0, 5, 'Too many members')
@@ -178,7 +182,7 @@ export const validateSearch = ctx => {
 
 export const validateRemoveSite = ctx => {
   let siteUrl = ctx.checkParams('id').notEmpty('required')
-    .decodeURIComponent().match(/^\/.+\/.+/, 'invalid').value
+    .match(/^\/.+\/.+/, 'invalid').value
   if (ctx.errors) ctx.throw(400)
   try {
     let splitedUrl = siteUrl.split('/')
@@ -200,7 +204,7 @@ export const validateRemoveUser = ctx => {
 
 export const validateUpdateVisibility = ctx => {
   let siteUrl = ctx.checkParams('id').notEmpty('required')
-    .decodeURIComponent().match(/^\/.+\/.+/, 'invalid').value
+    .match(/^\/.+\/.+/, 'invalid').value
   ctx.checkBody('visibility').notEmpty('required').isIn(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
   try {

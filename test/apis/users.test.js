@@ -8,11 +8,13 @@
 import createAgent from '../helper/superAgent'
 
 const agent = createAgent()
+const token = process.env.TEST_TOKEN
 
 describe('get /users/search', () => {
   test('success', async () => {
     let response = await agent
       .get('/v0/users/search?q=test&page=2&size=10')
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
     expect(response.body).toHaveProperty('total')
@@ -32,6 +34,7 @@ describe('post /users', () => {
       .post('/v0/users')
       .send(user)
       .set('Accept', 'application/json')
+      .set('Authorization', token)
     expect(response.status).toBe(201)
     expect(response.body.created).toBeTruthy()
   })
@@ -49,6 +52,7 @@ describe('put /users/:id', () => {
       .put(`/v0/users/${id}`)
       .send(user)
       .set('Accept', 'application/json')
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.updated).toBeTruthy()
   })
@@ -59,6 +63,7 @@ describe('delete /users/:id', () => {
     let id = encodeURI('test')
     let response = await agent
       .delete(`/v0/users/${id}`)
+      .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()
   })

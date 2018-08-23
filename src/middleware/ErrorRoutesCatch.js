@@ -20,7 +20,7 @@ class ErrorHandler {
   }
 
   static 404 (ctx, err) {
-    ctx.body.error = err.message
+    ctx.body.error = err.message || 'Page not found'
   }
 
   static 409 (ctx, err) {

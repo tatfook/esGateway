@@ -3,6 +3,7 @@ import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
 import { removeUser as removeAllPages } from './pages'
 import { removeUser as removeAllsites } from './sites'
+import { ensureAdmin } from '../extend/context'
 
 const index = `${SystemConfig.KeepWork_ENV}_kw_users`
 const type = 'users'
@@ -28,6 +29,7 @@ export const search = async ctx => {
 }
 
 export const create = async ctx => {
+  ensureAdmin(ctx)
   let user = validateCreate(ctx)
   let id = ctx.checkBody('username').value
   await esClient.create({
@@ -45,6 +47,7 @@ export const create = async ctx => {
 }
 
 export const update = async ctx => {
+  ensureAdmin(ctx)
   let user = validateUpdate(ctx)
   let id = ctx.params.id
   await esClient.update({
@@ -61,6 +64,7 @@ export const update = async ctx => {
 }
 
 export const remove = async ctx => {
+  ensureAdmin(ctx)
   ctx.checkParams('id').notEmpty('required')
   if (ctx.errors) ctx.throw(400)
   let id = ctx.params.id

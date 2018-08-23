@@ -1,12 +1,13 @@
 import KoaBody from 'koa-body'
 import KoaValidate from 'koa-validate'
 import compose from 'koa-compose'
-import { System as SystemConfig, logPath } from '../config'
+import { System as SystemConfig, logPath, jwt as JwtConfig } from '../config'
 import path from 'path'
 import MainRoutes from '../routes/main-routes'
 import ErrorRoutesCatch from './ErrorRoutesCatch'
 import ErrorRoutes from '../routes/error-routes'
 import bunyan from 'bunyan'
+import jwt from 'koa-jwt'
 
 const env = process.env.NODE_ENV || 'development' // Current mode
 
@@ -79,6 +80,7 @@ let middleWares = [
   initLogger,
   initRequest,
   initKoaBody,
+  jwt(JwtConfig),
   ErrorRoutesCatch,
   checkContentType,
   MainRoutes.routes(),
