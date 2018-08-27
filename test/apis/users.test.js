@@ -13,7 +13,7 @@ const token = process.env.TEST_TOKEN
 describe('get /users/search', () => {
   test('success', async () => {
     let response = await agent
-      .get('/v0/users/search?q=test&page=2&size=10')
+      .get('/users/search?q=test&page=2&size=10')
       .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
@@ -31,7 +31,7 @@ describe('post /users', () => {
       location: 'shenzhen'
     }
     let response = await agent
-      .post('/v0/users')
+      .post('/users')
       .send(user)
       .set('Accept', 'application/json')
       .set('Authorization', token)
@@ -49,7 +49,7 @@ describe('put /users/:id', () => {
       location: 'shenzhen'
     }
     let response = await agent
-      .put(`/v0/users/${id}`)
+      .put(`/users/${id}`)
       .send(user)
       .set('Accept', 'application/json')
       .set('Authorization', token)
@@ -62,7 +62,7 @@ describe('delete /users/:id', () => {
   test('success', async () => {
     let id = encodeURI('test')
     let response = await agent
-      .delete(`/v0/users/${id}`)
+      .delete(`/users/${id}`)
       .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()

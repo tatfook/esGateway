@@ -21,6 +21,8 @@ export let System = {
   // API服务器监听的端口号
   API_server_port: process.env.API_SERVER_PORT,
 
+  API_url_prifix: process.env.API_PREFIX || '',
+
   // HTTP服务器协议类型,包含"http://"或"https://"
   HTTP_server_type: process.env.HTTP_SERVER_TYPE,
 
@@ -47,7 +49,5 @@ export const jwt = {
   secret: process.env.SECRET,
   passthrough: true
 }
-
-export const urlPrefix = '/v0'
 
 export const logPath = 'logs/es-gateway.log'

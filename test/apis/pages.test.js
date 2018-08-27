@@ -13,7 +13,7 @@ const token = process.env.TEST_TOKEN
 describe('get /pages/search', () => {
   test('success', async () => {
     let response = await agent
-      .get('/v0/pages/search?q=test&page=2&size=10')
+      .get('/pages/search?q=test&page=2&size=10')
       .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')
@@ -31,7 +31,7 @@ describe('post /pages', () => {
       visibility: 'public'
     }
     let response = await agent
-      .post('/v0/pages')
+      .post('/pages')
       .send(page)
       .set('Accept', 'application/json')
       .set('Authorization', token)
@@ -48,7 +48,7 @@ describe('put /pages/:id', () => {
       tags: ['cs', 'nodejs']
     }
     let response = await agent
-      .put(`/v0/pages/${id}`)
+      .put(`/pages/${id}`)
       .send(page)
       .set('Accept', 'application/json')
       .set('Authorization', token)
@@ -61,7 +61,7 @@ describe('delete /pages/:id', () => {
   test('success', async () => {
     let id = encodeURIComponent('/user1/site1/page1')
     let response = await agent
-      .delete(`/v0/pages/${id}`)
+      .delete(`/pages/${id}`)
       .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body.deleted).toBeTruthy()

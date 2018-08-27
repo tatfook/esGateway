@@ -1,8 +1,11 @@
 import KoaRouter from 'koa-router'
 import controllers from '../controllers/index'
-import { urlPrefix } from '../config'
+import { System as SYSTEM_CONFIG } from '../config'
 
-const mainRouter = new KoaRouter({ prefix: urlPrefix })
+const apiPrefix = SYSTEM_CONFIG.API_url_prifix
+
+const mainRouter = new KoaRouter()
+const apiRouter = new KoaRouter({ prefix: apiPrefix })
 const pagesRouter = new KoaRouter({ prefix: '/pages' })
 const sitesRouter = new KoaRouter({ prefix: '/sites' })
 const usersRouter = new KoaRouter({ prefix: '/users' })
@@ -26,12 +29,15 @@ usersRouter
   .put('/:id', controllers.users.update)
   .delete('/:id', controllers.users.remove)
 
+apiRouter
+  .use(pagesRouter.routes())
+  .use(sitesRouter.routes())
+  .use(usersRouter.routes())
+
 mainRouter
   .get('/hello', (ctx, next) => { ctx.body = 'Hello!' })
   .post('/es/search', controllers.es.search)
   .post('/git/commit', controllers.git.commit)
-  .use(pagesRouter.routes())
-  .use(sitesRouter.routes())
-  .use(usersRouter.routes())
+  .use(apiRouter.routes())
 
 export default mainRouter
