@@ -9,7 +9,7 @@ import {
 } from './pages'
 
 const index = SystemConfig.Es_Indexes.sites
-const type = 'websites'
+const type = 'sites'
 
 export const search = async ctx => {
   validateSearch(ctx)
