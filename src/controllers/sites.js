@@ -8,7 +8,7 @@ import {
   updateVisibility as updatePagesVisibility
 } from './pages'
 
-const index = `${SystemConfig.KeepWork_ENV}_kw_websites`
+const index = SystemConfig.Es_Indexes.sites
 const type = 'websites'
 
 export const search = async ctx => {
@@ -116,7 +116,7 @@ export const validateCreate = ctx => {
 
   let reqBody = ctx.request.body
   ctx.checkBody('displayName').default(reqBody.sitename)
-  reqBody.url = `/${reqBody.username}/${reqBody.sitename}`
+  reqBody.url = `${reqBody.username}/${reqBody.sitename}`
   return {
     username: reqBody.username,
     sitename: reqBody.sitename,

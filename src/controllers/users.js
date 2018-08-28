@@ -5,7 +5,7 @@ import { removeUser as removeAllPages } from './pages'
 import { removeUser as removeAllsites } from './sites'
 import { ensureAdmin } from '../extend/context'
 
-const index = `${SystemConfig.KeepWork_ENV}_kw_users`
+const index = SystemConfig.Es_Indexes.users
 const type = 'users'
 
 export const search = async ctx => {

@@ -3,7 +3,7 @@ import { getDatetime, paginate } from '../lib/util'
 import { System as SystemConfig } from '../config'
 import { ensureAdmin } from '../extend/context'
 
-const index = `${SystemConfig.KeepWork_ENV}_kw_pages`
+const index = SystemConfig.Es_Indexes.pages
 const type = 'pages'
 
 export const search = async ctx => {
@@ -130,7 +130,7 @@ export const updateVisibility = async ctx => {
 }
 
 export const validateCreate = ctx => {
-  ctx.checkBody('url').notEmpty('required').match(/^\/.+\/.+\/.+/, 'invalid format')
+  ctx.checkBody('url').notEmpty('required').match(/^[^/]+\/[^/]+\/[^/]+/, 'invalid format')
   ctx.checkBody('source_url').notEmpty('required').isUrl('must be an url')
   ctx.checkBody('visibility').default('public').in(['public', 'private'], 'invalid')
   if (ctx.errors) ctx.throw(400)
@@ -138,8 +138,8 @@ export const validateCreate = ctx => {
   let reqBody = ctx.request.body
   let username, sitename, pagename
   try {
-    [username, sitename] = reqBody.url.split('/').slice(1)
-    pagename = reqBody.url.replace(`/${username}/${sitename}/`, '')
+    [username, sitename] = reqBody.url.split('/')
+    pagename = reqBody.url.replace(`${username}/${sitename}/`, '')
   } catch (err) {
     ctx.throw(500)
   }

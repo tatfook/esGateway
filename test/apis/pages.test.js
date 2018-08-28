@@ -26,7 +26,7 @@ describe('get /pages/search', () => {
 describe('post /pages', () => {
   test('success', async () => {
     let page = {
-      url: '/user1/site1/page1',
+      url: 'user1/site1/page1',
       source_url: 'git.keepwork.com',
       visibility: 'public'
     }
@@ -42,7 +42,7 @@ describe('post /pages', () => {
 
 describe('put /pages/:id', () => {
   test('success', async () => {
-    let id = encodeURIComponent('/user1/site1/page1')
+    let id = encodeURIComponent('user1/site1/page1')
     let page = {
       content: 'It is a very nice page',
       tags: ['cs', 'nodejs']
@@ -59,7 +59,7 @@ describe('put /pages/:id', () => {
 
 describe('delete /pages/:id', () => {
   test('success', async () => {
-    let id = encodeURIComponent('/user1/site1/page1')
+    let id = encodeURIComponent('user1/site1/page1')
     let response = await agent
       .delete(`/pages/${id}`)
       .set('Authorization', token)

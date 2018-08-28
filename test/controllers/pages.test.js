@@ -12,7 +12,7 @@ import { MockContext } from '../helper/mockcontext'
 
 describe('while creating a page', () => {
   describe('valid params', () => {
-    let url = '/user/site/page'
+    let url = 'user/site/page'
     let sourceUrl = 'keepwork.com'
     let visibility = 'private'
 
@@ -65,7 +65,7 @@ describe('while creating a page', () => {
     test('2', () => {
       const ctx2 = new MockContext()
         .setReqBody({
-          url: 'sada/asdas/asdas',
+          url: 'sadaasdas/asdas',
           source_url: 'not a url',
           visibility: 'out of range'
         })

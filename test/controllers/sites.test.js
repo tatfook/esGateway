@@ -14,15 +14,15 @@ describe('while creating a website', () => {
     let logoUrl = 'keepwork.logo.com'
     let desc = 'it is a nice website'
     let displayName = 'differentsitename'
-    let url = `/${username}/${sitename}`
+    let url = `${username}/${sitename}`
 
     test('1', () => {
       let ctx = new MockContext()
         .setReqBody({
-          username: username,
-          sitename: sitename,
-          logoUrl: logoUrl,
-          desc: desc
+          username,
+          sitename,
+          logoUrl,
+          desc
         })
       let site = validateCreate(ctx)
       expect(ctx.status).toBe(200)
@@ -38,11 +38,11 @@ describe('while creating a website', () => {
     test('2', () => {
       let ctx = new MockContext()
         .setReqBody({
-          username: username,
-          sitename: sitename,
-          logoUrl: logoUrl,
-          desc: desc,
-          displayName: displayName
+          username,
+          sitename,
+          logoUrl,
+          desc,
+          displayName
         })
       let site = validateCreate(ctx)
       expect(ctx.status).toBe(200)

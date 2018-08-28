@@ -12,5 +12,5 @@ test('system config', () => {
   expect(System).toHaveProperty('Es_Base_URL')
   expect(System).toHaveProperty('Es_Version')
   expect(System).toHaveProperty('KeepWork_API_Base_URL')
-  expect(System).toHaveProperty('KeepWork_ENV')
+  expect(System).toHaveProperty('Es_Indexes')
 })

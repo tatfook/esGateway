@@ -41,8 +41,12 @@ export let System = {
   // 生产环境务必随机设置一个值
   Es_Base_URL: process.env.ES_BASE_URL,
   Es_Version: process.env.ES_VERSION,
-  KeepWork_API_Base_URL: process.env.KEEPWORK_API_BASE_URL,
-  KeepWork_ENV: process.env.KEEPWORK_ENV
+  Es_Indexes: {
+    pages: 'pages',
+    sites: 'sites',
+    users: 'users'
+  },
+  KeepWork_API_Base_URL: process.env.KEEPWORK_API_BASE_URL
 }
 
 export const jwt = {
