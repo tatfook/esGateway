@@ -13,7 +13,7 @@ const token = process.env.TEST_TOKEN
 describe('get /users/search', () => {
   test('success', async () => {
     let response = await agent
-      .get('/users/search?q=test&page=2&size=10')
+      .get('/users/search?q=test&page=2&per_page=10')
       .set('Authorization', token)
     expect(response.status).toBe(200)
     expect(response.body).toHaveProperty('took')

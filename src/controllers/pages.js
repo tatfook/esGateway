@@ -8,10 +8,7 @@ const type = 'pages'
 
 export const search = async ctx => {
   validateSearch(ctx)
-  let [from, size] = paginate(
-    ctx.query.page,
-    ctx.query.size
-  )
+  const [from, size] = paginate(ctx.query)
   await esClient.search({
     index: index,
     type: type,
